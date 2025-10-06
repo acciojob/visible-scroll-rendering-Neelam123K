@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
 
-const items = Array.from({ length: 100 }, (_, i) => `Item ${i}`); // ✅ zero-based
+const items = Array.from({ length: 100 }, (_, i) => `Item ${i + 1}`);
 
 const VisibleScroll = () => {
   const containerRef = useRef(null);
   const [visibleItems, setVisibleItems] = useState([]);
-  const itemHeight = 50; // 10 items in 500px
+  const itemHeight = 50; // So 500px / 50px = 10 items visible
 
   useEffect(() => {
     const handleScroll = () => {
@@ -13,12 +13,13 @@ const VisibleScroll = () => {
         const { scrollTop, clientHeight } = containerRef.current;
 
         const startIndex = Math.floor(scrollTop / itemHeight);
-
-        // ✅ Always render exactly 10 items (or fewer if at end)
-        const endIndex = Math.min(startIndex + 10, items.length);
+        const endIndex = Math.min(
+          items.length - 1,
+          Math.ceil((scrollTop + clientHeight) / itemHeight) - 1 // ✅ fix
+        );
 
         const slicedItems = items
-          .slice(startIndex, endIndex)
+          .slice(startIndex, endIndex + 1)
           .map((item, i) => ({
             item,
             index: startIndex + i,
@@ -62,7 +63,7 @@ const VisibleScroll = () => {
             }}
           >
             <strong>{item}</strong>
-            <h2 style={{ margin: "4px 0" }}>{lorem}</h2> 
+            <h2 style={{ margin: "4px 0" }}>Lorem ipsum dolor sit amet</h2>
           </div>
         ))}
       </div>
