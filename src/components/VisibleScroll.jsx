@@ -5,7 +5,7 @@ const items = Array.from({ length: 100 }, (_, i) => `Item ${i + 1}`);
 const VisibleScroll = () => {
   const containerRef = useRef(null);
   const [visibleItems, setVisibleItems] = useState([]);
-  const itemHeight = 60; // Adjusted for multiple lines
+  const itemHeight = 50; // So 500px / 50px = 10 items visible
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,7 +31,6 @@ const VisibleScroll = () => {
 
     const container = containerRef.current;
     container.addEventListener("scroll", handleScroll);
-
     handleScroll(); // Initial render
 
     return () => {
@@ -42,7 +41,7 @@ const VisibleScroll = () => {
   return (
     <div
       ref={containerRef}
-      style={{ height: "300px", overflowY: "scroll", border: "1px solid black" }}
+      style={{ height: "500px", overflow: "auto" }} 
     >
       <div
         style={{
@@ -50,6 +49,7 @@ const VisibleScroll = () => {
           position: "relative",
         }}
       >
+        {/*commit  */}
         {visibleItems.map(({ item, index }) => (
           <div
             key={index}
@@ -64,7 +64,7 @@ const VisibleScroll = () => {
             }}
           >
             <strong>{item}</strong>
-            <p style={{ margin: "4px 0" }}>Lorem ipsum dolor sit amet</p>
+            <h2 style={{ margin: "4px 0" }}>Lorem ipsum dolor sit amet</h2>
           </div>
         ))}
       </div>
