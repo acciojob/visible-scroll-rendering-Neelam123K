@@ -15,7 +15,7 @@ const VisibleScroll = () => {
         const startIndex = Math.floor(scrollTop / itemHeight);
         const endIndex = Math.min(
           items.length - 1,
-          Math.floor((scrollTop + clientHeight) / itemHeight)
+          Math.ceil((scrollTop + clientHeight) / itemHeight) - 1 // ✅ fix
         );
 
         const slicedItems = items
@@ -41,7 +41,7 @@ const VisibleScroll = () => {
   return (
     <div
       ref={containerRef}
-      style={{ height: "500px", overflow: "auto" }} 
+      style={{ height: "500px", overflow: "auto" }}
     >
       <div
         style={{
@@ -49,7 +49,6 @@ const VisibleScroll = () => {
           position: "relative",
         }}
       >
-        {/*commit  */}
         {visibleItems.map(({ item, index }) => (
           <div
             key={index}
