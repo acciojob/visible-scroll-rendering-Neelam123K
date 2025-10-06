@@ -1,29 +1,29 @@
 import React, { useEffect, useState, useRef } from "react";
 
-const items = Array.from({ length: 100 }, (_, i) => `Item ${i + 1}`);
+const items = Array.from({ length: 1000 }, (_, i) => `Item ${i}`);
 
 const VisibleScroll = () => {
-  const containerRef = useRef(null);
+  const containerRef = useRef(null);  // ✅ ref to the scroll container
   const [visibleItems, setVisibleItems] = useState([]);
-  const itemHeight = 50; // So 500px / 50px = 10 items visible
+  const itemHeight = 50;              // fixed row height
+  const containerHeight = 500;        // fixed container height
 
   useEffect(() => {
     const handleScroll = () => {
       if (containerRef.current) {
         const { scrollTop, clientHeight } = containerRef.current;
 
+        // ✅ compute which items should be visible
         const startIndex = Math.floor(scrollTop / itemHeight);
         const endIndex = Math.min(
-          items.length - 1,
-          Math.ceil((scrollTop + clientHeight) / itemHeight) - 1 // ✅ fix
+          items.length,
+          startIndex + Math.ceil(clientHeight / itemHeight)
         );
 
-        const slicedItems = items
-          .slice(startIndex, endIndex + 1)
-          .map((item, i) => ({
-            item,
-            index: startIndex + i,
-          }));
+        const slicedItems = items.slice(startIndex, endIndex).map((item, i) => ({
+          item,
+          index: startIndex + i,
+        }));
 
         setVisibleItems(slicedItems);
       }
@@ -31,7 +31,8 @@ const VisibleScroll = () => {
 
     const container = containerRef.current;
     container.addEventListener("scroll", handleScroll);
-    handleScroll(); // Initial render
+
+    handleScroll(); // run once to set initial items
 
     return () => {
       container.removeEventListener("scroll", handleScroll);
@@ -41,11 +42,15 @@ const VisibleScroll = () => {
   return (
     <div
       ref={containerRef}
-      style={{ height: "500px", overflow: "auto" }}
+      style={{
+        height: `${containerHeight}px`,
+        overflowY: "auto",         // ✅ scrollbars only when needed
+        border: "1px solid #ccc",
+      }}
     >
       <div
         style={{
-          height: `${items.length * itemHeight}px`,
+          height: `${items.length * itemHeight}px`, // ✅ full height spacer
           position: "relative",
         }}
       >
@@ -58,12 +63,12 @@ const VisibleScroll = () => {
               height: `${itemHeight}px`,
               width: "100%",
               boxSizing: "border-box",
-              borderBottom: "1px solid #ccc",
+              borderBottom: "1px solid #eee",
               padding: "8px",
             }}
           >
             <strong>{item}</strong>
-            <h2 style={{ margin: "4px 0" }}>Lorem ipsum dolor sit amet</h2>
+            <p style={{ margin: "4px 0" }}>Lorem ipsum dolor sit amet.</p>
           </div>
         ))}
       </div>
